@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel - Dashboard Servicios</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            transition: all 0.25s ease;
+        }
+
+        /* Fondo degradado sutil con textura */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #eef1f7 100%);
+            color: #4c5a6a;
+            min-height: 100vh;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 98% 2%, rgba(200, 210, 230, 0.15) 0.5px, transparent 1px),
+                radial-gradient(circle at 2% 98%, rgba(200, 210, 230, 0.15) 0.5px, transparent 1px);
+            background-size: 40px 40px;
+            background-attachment: fixed;
+        }
+
+        /* Encabezado con efecto vidrio esmerilado */
+        .header {
+            background: rgba(29, 35, 43, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #f0f3f7;
+            text-align: center;
+            padding: 35px 30px;
+            box-shadow: 0 4px 25px rgba(25, 30, 40, 0.15);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(86, 96, 114, 0.3);
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background-image: linear-gradient(
+                45deg, 
+                rgba(70, 80, 95, 0.05) 0%, 
+                rgba(70, 80, 95, 0) 30%, 
+                rgba(70, 80, 95, 0.05) 70%, 
+                rgba(70, 80, 95, 0) 100%
+            );
+            z-index: -1;
+            animation: bgShift 45s infinite linear;
+        }
+
+        @keyframes bgShift {
+            0% { transform: translate(0,0); }
+            25% { transform: translate(-25%,-15%); }
+            50% { transform: translate(-50%,0); }
+            75% { transform: translate(-25%,15%); }
+            100% { transform: translate(0,0); }
+        }
+
+        .header h1 {
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin: 0 0 10px 0;
+            font-size: 2.2rem;
+            position: relative;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            opacity: 0.85;
+            letter-spacing: 0.5px;
+        }
+
+        /* Time */
+        .time {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #b0bed0;
+            letter-spacing: 0.8px;
+            position: relative;
+            margin-top: 10px;
+            padding: 8px 20px;
+            display: inline-block;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 45px 5%;
+            max-width: 1600px;
+            margin: 0 auto;
+            filter: drop-shadow(0 5px 15px rgba(35, 40, 52, 0.1));
+        }
+
+        /* Tiles */
+        .tile {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 18px;
+            margin: 22px;
+            box-shadow: 
+                0 8px 25px rgba(40, 45, 55, 0.08),
+                0 2px 12px rgba(40, 45, 55, 0.025);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(230, 234, 240, 0.5);
+        }
+
+        .tile::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.8) 100%);
+            z-index: -1;
+            border-radius: 18px;
+        }
+
+        .tile:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 
+                0 20px 45px rgba(40, 45, 55, 0.15),
+                0 8px 18px rgba(40, 45, 55, 0.08);
+        }
+
+        .tile-content {
+            padding: 32px 28px 24px 28px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tile-content img {
+            width: calc(100% - 4px);
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(45, 50, 60, 0.09);
+            border: 1px solid rgba(240, 243, 247, 0.5);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .tile:hover .tile-content img {
+            transform: scale(1.02);
+        }
+
+        /* Tile Info */
+        .tile-info {
+            margin-top: 20px;
+            padding-top: 18px;
+            position: relative;
+        }
+
+        .tile-info::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #dfe3e9, transparent);
+        }
+
+        .tile-info h3 {
+            font-size: 1.5rem;
+            margin: 10px 0 15px;
+            color: #4d5b70;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .tile-info p {
+            margin: 0;
+            color: #7b8595;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* Tile Action */
+        .tile-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 22px;
+            padding: 14px 32px;
+            background: rgba(90, 105, 125, 0.9);
+            background: linear-gradient(to right, #7f8ea2 0%, #65768d 100%);
+            color: #f7f9fc;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 0.7px;
+            transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 
+                0 8px 18px rgba(35, 45, 65, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(200, 205, 220, 0.2);
+            min-width: 180px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .tile-action:hover {
+            transform: translateY(-3px) rotate(0.5deg);
+            background: linear-gradient(to right, #74859a 0%, #5a6a80 100%);
+            box-shadow: 
+                0 10px 25px rgba(35, 45, 65, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+
+        .tile-action::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 30px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.18);
+            transform: rotate(25deg);
+            transition: all 0.8s ease;
+            z-index: -1;
+        }
+
+        .tile-action:hover::after {
+            left: 120%;
+        }
+
+        /* Tile Sizes */
+        .large { flex-basis: 45%; min-width: 480px; }
+        .medium { flex-basis: 30%; min-width: 350px; }
+        .wide { flex-basis: 94%; min-width: 90%; }
+        .small { flex-basis: 22%; min-width: 280px; }
+
+        /* Icon with gradient */
+        .tile-icon {
+            display: flex;
+            justify-content: center;
+            margin: 18px 0 26px;
+        }
+
+        .tile-icon i {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #8195af, #647896);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            filter: drop-shadow(0 3px 6px rgba(70, 90, 110, 0.15));
+        }
+
+        /* Chip */
+        .chip {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            margin: 6px;
+            background: rgba(230, 236, 245, 0.8);
+            color: #5d6c82;
+            border: 1px solid rgba(210, 216, 228, 0.5);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #8d99a9;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(220, 225, 235, 0.5);
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer a {
+            color: #73859a;
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: #62728a;
+        }
+
+        /* Light/Dark Mode Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #e0e5ee;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: rotate(15deg);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .large, .medium, .small { flex-basis: 45%; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 3%;
+            }
+            .large, .medium, .small { 
+                flex-basis: 100%; 
+                min-width: unset;
+            }
+            .theme-toggle {
+                top: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Additional effects */
+        .glow {
+            animation: glowEffect 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowEffect {
+            from { box-shadow: 0 0 0 -1px rgba(100, 120, 150, 0.3); }
+            to { box-shadow: 0 0 20px 2px rgba(100, 120, 150, 0.3); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        
+        <h1>SERVICIOS DEL HOTEL</h1>
+        <div class="time" id="currentTime"></div>
+    </div>
+
+    <div class="container">
+        <!-- Bloque grande - Transportes -->
+        <div class="tile large transport-tile">
+            <div class="tile-content">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7109caf9-3421-4581-8a58-66e15ca6ec65.png" alt="Servicios de transporte y tours">
+                <div class="tile-info">
+      <h3>Transportes y Tours </h3>
+      <div class="tile-actions">
+        <a class="tile-action primary" href="https://docs.google.com/spreadsheets/d/11Ajow6f2_oAs9GUpMSACMwx_TK7BmNzYZ-SdDuK_lew/edit?usp=sharing" target="_blank">Tarifas transporte</a>
+        <a class="tile-action secondary" href="https://docs.google.com/spreadsheets/d/1_tJus2Hks7fa9Y-fKyx7lzfGel7gN7LrgZDw2Xe_23M/edit?usp=sharing" target="_blank">Tours</a>
+      </div>
+    </div>
+            </div>
+        </div>
+        
+        <!-- Bloque mediano - Cuatrimotos -->
+        <div class="tile medium adventure-tile">
+            <div class="tile-content">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/967a540d-0fa6-4a3f-8551-c5ad1c6427f0.png" alt="Aventuras en cuatrimotos">
+                <div class="tile-info">
+      <h3>Cuatrimotos </h3>
+      <div class="tile-actions">
+        <a class="tile-action primary" href="https://wa.me/51984528288" target="_blank">WHATSAPP</a>
+        <a class="tile-action secondary" href="imag/2025 CUATRIMOTOS ACTUALIZADO.docx (3) (1).pdf" target="_blank">PDF</a>
+      </div>
+    </div>
+            </div>
+        </div>
+        
+
+        <!-- Bloque mediano - Mantenimiento -->
+        <div class="tile medium maintenance-tile">
+            <div class="tile-content">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b00d99a4-0829-464e-9a54-7fd5a20c9892.png" alt="Mantenimiento">
+                <div class="tile-info">
+                    <h3>MANTENIMIENTO</h3>
+      <div class="tile-actions">
+        <a class="tile-action primary" href="https://wa.me/51981515815" target="_blank">WHATSAPP</a>
+      </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bloque grande - Masajes -->
+        <div class="tile large wellness-tile">
+            <div class="tile-content">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1786f708-da53-4302-ac36-cb2d99b19f88.png" alt="Servicios de masajes y spa">
+                <div class="tile-info">
+      <h3>Masajes a la Habitación</h3>
+      <div class="tile-actions">
+        <a class="tile-action primary" href="imag/Masajes 2025 (2).pdf" target="_blank">PDF</a>
+        <a class="tile-action secondary" href="https://wa.me/51984627263" target="_blank">WHATSAPP</a>
+      </div>
+    </div>
+            </div>
+        </div>
+       
+        <div class="tile large medical-tile">
+  <div class="tile-content">
+    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d505745c-bdf6-47b3-a5af-a3f929ee6e4d.png" alt="Pizzeria Deliveri">
+    <div class="tile-info">
+      <h3>Pizzeria Deliveri </h3>
+      <div class="tile-actions">
+        <a class="tile-action primary" href="https://wa.me/51974540570" target="_blank">WHATSAPP</a>
+        <a class="tile-action secondary" href="imag/carta-pizza (1).pdf" target="_blank">Carta PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+        
+        <div class="tile large wellness-tile">
+            <div class="tile-content">
+    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9702f7c7-fd31-4b7b-b756-aa415ba6a332.png" alt="Asistencia médica a domicilio">
+    <div class="tile-info">
+      <h3>ASISTENCIA MÉDICA</h3>
+      <div class="tile-actions">
+        <a class="tile-action primary" href="https://wa.me/51973370337" target="_blank">1RA OPCIÓN</a>
+        <a class="tile-action secondary" href="https://wa.me/51991231508" target="_blank">2DA OPCIÓN</a>
+      </div>
+    </div>
+  </div>
+        </div>
+        
+        <!-- Bloque pequeño - Pizza -->
+        <div class="tile small food-tile">
+            <div class="tile-content">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8f3893af-734e-416b-bb88-8c20be340373.png" alt="Más servicios">
+                <div class="tile-info">
+                    <h3>AÑADIR MÁS SERVICIOS</h3>
+                    <span class="tile-action">PDF</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update current time in HH:MM format
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('es-PE', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            document.getElementById('currentTime').textContent = timeString;
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            themeToggle.textContent = document.body.classList.contains('dark-theme') ? '🌙' : '☀️';
+            
+            // Add animation effect
+            themeToggle.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                themeToggle.style.transform = '';
+            }, 500);
+        });
+
+        // Add dynamic glow effect to chips
+        const chips = document.querySelectorAll('.chip');
+        chips.forEach(chip => {
+            chip.addEventListener('mouseover', () => {
+                chip.classList.add('glow');
+            });
+            chip.addEventListener('mouseout', () => {
+                chip.classList.remove('glow');
+            });
+        });
+
+        // Animate tiles on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.tile').forEach((tile, index) => {
+                    tile.style.transitionDelay = `${index * 0.1}s`;
+                    tile.style.transform = 'translateY(20px)';
+                    tile.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        tile.style.transform = 'translateY(0)';
+                        tile.style.opacity = '1';
+                    }, 300 + (index * 100));
+                });
+            }, 200);
+        });
+    </script>
+</body>
+</html>
